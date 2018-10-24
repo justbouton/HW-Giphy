@@ -20,12 +20,14 @@
     <!-- animals will get dumped here -->
     <div id="animals-view"></div>
 
-    <form id="animal-form">
-      <input type="text" id="animal-input" placeholder="Search new Giphy..."><br>
+    <form id="animal-form" onsubmit="return checkforblank()">
+       <input type="text" id="animal-input" placeholder="Search Giphy..."><br>
 
       <!-- Button triggers new animal to be added -->
-      <input id="add-animal" type="submit" value="Make new buttons!">
+        <input type="submit" value="Make new buttons!">
     </form>
+
+    <div class="gif-view"></div>
       
            
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -66,26 +68,69 @@
     animals.push(input);// The animal from the textbox is then added to our array
 
     renderButtons();// calling renderButtons which handles the processing of our animal array
+
+
+
+// HELP!  NEEDS TO BE DRY!    
+    $('.animal').click(function() {
+      var animalData = $(this).data()
+      console.log(animalData)//WORKING pulling data from .animal "this" button
+
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + animalData + "&api_key=dc6zaTOxFJmzC&tag=&limit=10";
+// EXAMPLE          http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=YOUR_API_KEY
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(response) {
+          console.log(response.data);
+      });
+
+    });
   });
 
   renderButtons();// Calling the renderButtons function at least once to display the initial list of animals
-  
-  
-  // Example queryURL for Giphy API
-  $('.animal').click(function() {
-            var data = $(this).data('name')
-            // console.log(data)//WORKING pulling data from .animal "this" button
 
-  var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" + data;
+  
+// HELP!  NEEDS TO BE DRY!    
+$('.animal').click(function() {
+            var animalData = $(this).data()
+            console.log(animalData)//WORKING pulling data from .animal "this" button
+
+  var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + animalData + "&api_key=dc6zaTOxFJmzC&tag=&limit=10";
 
   $.ajax({
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-    console.log(response);
+    console.log(response.data);
   });
 
-  });
+// * // TODO
+// for each to process each array and output the src, set animate to still.
+
+
+  
+// // Declare var imageURL make it = to the response.data.image_original_url;
+//   var imageUrl = response.data.image_original_url;
+
+//   // Declare var image = to $("<img>")
+//   var image = $("<img>");
+
+//   // Apply attr, src, with imageURL. Apply attr; alt, with "cat image".
+//   image.attr("src", imageUrl);
+//   image.attr("alt", "cat image");
+
+//   // Selects id images, prepent(image)
+//   $("#gif-view").prepend(image);
+})
+// });
+
+
+  // });
+
+
+
+
 
 
 // TOGGLE GIPHY STATE AND SRC: STILL AND ANIMATE
@@ -98,6 +143,15 @@
   // } else {
   //     $(this).attr("src", $(this).attr("data-still"));
   //     $(this).attr("data-state", "still");
+  function checkforblank() {
+      if (document.getElementById('animal-input').value == "") {
+        $('#animal-input').attr('placeholder','SEARCH HERE');
+        // alert('Search cannot be blank');
+        document.getElementById('animal-input').style.borderColor = "red";
+        return false;
+      }
+    }
+
         </script>
 </body>
 </html>
