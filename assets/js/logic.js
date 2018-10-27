@@ -43,16 +43,37 @@ function renderButtons() {
       
       $(".gif-view").empty();
 
-    for (var i = 0; i < response.data.length; i++) {//loop through data for needed responses
-      var rating = response.data[i].rating;//rating
-      var imgURL = response.data[i].images.downsized.url;//image
+      var response = response.data
+
+    for (var i = 0; i < response.length; i++) {//loop through data for needed responses
+      var rating = response[i].rating;//rating
+      var stillURL = response[i].images.fixed_height_still.url;//image
+      var animateURL = response[i].images.fixed_height.url;//Animate
       var content = $("<div class='content'>");
       var ratingP = $("<p>").text("Rating: " + rating);
-      var image = $("<img class='image'>").attr("src", imgURL);
+      var image = $("<img class='image'>").attr({
+        "src" : stillURL,
+        "data-still" : stillURL,
+        "data-animate" : animateURL
+      });
+      
       content.append(ratingP, image);// add rating and the image to the page
       // rendering the content to the .gif-view
       $(".gif-view").prepend(content);
     }
+
+    $(".image").on("click", function () {
+      var state = $(this).attr("data-type");
+      if ($(this).attr("data-type") === "animate") {
+          $(this).attr("src", $(this).attr("data-still"));
+          $(this).attr("data-type", "still");
+      } else {
+          $(this).attr("src", $(this).attr("data-animate"));
+          $(this).attr("data-type", "animate");
+          console.log("THERE")
+
+      }
+    });
 
     });
   });
